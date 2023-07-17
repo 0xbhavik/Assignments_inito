@@ -8,8 +8,6 @@ hasUpperCase=0
 hasSpecialChar=0
 hasNumber=false
 str_len=${#pass}
-echo "str_len ${str_len} "
-
 
 for ((i=0;i<${#pass};i++)); do
  char=${pass:i:1}
