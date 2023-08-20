@@ -1,0 +1,23 @@
+<h2>Here's are all your generated Api keys</h2>
+&nbsp; <%= link_to 'Generate Key', generate_keys_path, method: :put %> &nbsp;
+<%= link_to 'show key', show_random_unblocked_keys_path, method: :put %>
+<br />
+<br />
+<%= will_paginate @api_keys %>
+<ul>
+  <% @api_keys.each do |api_key|%>
+    <li>
+      <span> key_id: <%=api_key.id %> , </span>
+      <span> key: <%=api_key.name %> , </span>
+      &nbsp;
+      <span> blocked: <%=api_key.is_blocked %> </span>
+      <br />
+      <%= link_to 'unblock_key', unblock_key_path(api_key.id), method: :put %>
+      &nbsp;
+    <%= link_to 'delete_key', key_path(api_key.id), method: :delete,
+     data: { confirm: "Are you sure you want to delete this key?" } %> &nbsp;
+      <%= link_to 'preserve_key', preserve_key_path(api_key.id) , method: :put %>
+    </li>
+    <br />
+  <% end %>
+</ul>
