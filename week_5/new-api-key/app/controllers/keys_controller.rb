@@ -3,14 +3,17 @@ class KeysController < ApplicationController
   after_action :change_block_status, only: [:show_random_unblocked], if: -> { @random_unblocked_key.present? }
 
   def index
-    @api_keys = AccessToken.paginate(page: params[:page], per_page: 10)
+    @api_keys = AccessToken.order(:id).paginate(page: params[:page], per_page: 10)
   end
 
   def generate
     generated_api_key_name = AccessToken.generate_api_key
     @new_api_key = AccessToken.new(name: generated_api_key_name)
-
-    flash[:error] = 'Failed to generate and save the API key.' unless @new_api_key.save
+    if @new_api_key.save
+      flash[:notice] = 'Key generated'
+    else
+      flash[:error] = 'Failed to generate and save the API key.'
+    end
     redirect_to keys_path
   end
 
@@ -25,7 +28,9 @@ class KeysController < ApplicationController
   end
 
   def unblock
-    if @api_key.unblock_key
+    if !@api_key.is_blocked
+      flash[:error] = 'Your key is already unblocked'
+    elsif @api_key.unblock_key
       flash[:notice] = 'unblocked API key.'
     else
       flash[:error] = 'Failed to unblock the API key.'

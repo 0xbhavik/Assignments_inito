@@ -18,13 +18,15 @@ class AccessToken < ApplicationRecord
 
   # class method
   def self.delete_record_if_not_preserved
-    where("time_when_preserved + INTERVAL '30 seconds' < ?", Time.now)
+    interval_time_seconds = 30
+    where("time_when_preserved + INTERVAL '#{interval_time_seconds} seconds' < ?", Time.now)
       .destroy_all
   end
 
   def self.release_blocked_key
+    interval_time_seconds = 30
     where(is_blocked: true)
-      .where("time_when_blocked + INTERVAL '30 seconds' < ?", Time.now)
+      .where("time_when_blocked + INTERVAL '#{interval_time_seconds} seconds' < ?", Time.now)
       .update_all(is_blocked: false, time_when_blocked: nil)
   end
 
